@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 
 const patchSchema = z.object({
-  birthYear: z.number().int().min(1900).max(new Date().getFullYear()),
+  birthDate: z.string().date(),
   lifeExpectancy: z.number().int().min(60).max(100),
 });
 
@@ -21,7 +21,7 @@ export async function GET(req: Request) {
     where: { unsubscribeToken: token },
     select: {
       email: true,
-      birthYear: true,
+      birthDate: true,
       lifeExpectancy: true,
       unsubscribedAt: true,
     },
@@ -31,7 +31,7 @@ export async function GET(req: Request) {
   }
   return NextResponse.json({
     email: sub.email,
-    birthYear: sub.birthYear,
+    birthDate: sub.birthDate.toISOString().split("T")[0],
     lifeExpectancy: sub.lifeExpectancy,
     unsubscribed: sub.unsubscribedAt !== null,
   });
@@ -68,7 +68,7 @@ export async function PATCH(req: Request) {
   await prisma.subscription.update({
     where: { id: sub.id },
     data: {
-      birthYear: parsed.data.birthYear,
+      birthDate: new Date(parsed.data.birthDate + "T00:00:00"),
       lifeExpectancy: parsed.data.lifeExpectancy,
     },
   });

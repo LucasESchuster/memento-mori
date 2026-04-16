@@ -10,7 +10,8 @@ import { Quote } from "@/components/Quote";
 import { SubscribeForm } from "@/components/SubscribeForm";
 import {
   calculateLifeStats,
-  isValidBirthYear,
+  isValidBirthDate,
+  parseBirthDate,
   type LifeStats as LifeStatsType,
 } from "@/lib/calculations";
 import { pickRandomQuote, type Quote as QuoteType } from "@/lib/quotes";
@@ -19,7 +20,7 @@ const STORAGE_KEY = "memento-mori:inputs";
 const DEFAULT_EXPECTANCY = 80;
 
 type StoredInputs = {
-  birthYear?: string;
+  birthDate?: string;
   lifeExpectancy?: number;
 };
 
@@ -30,7 +31,7 @@ function readStored(): StoredInputs {
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     return {
-      birthYear: typeof parsed.birthYear === "string" ? parsed.birthYear : undefined,
+      birthDate: typeof parsed.birthDate === "string" ? parsed.birthDate : undefined,
       lifeExpectancy:
         typeof parsed.lifeExpectancy === "number" ? parsed.lifeExpectancy : undefined,
     };
@@ -40,7 +41,7 @@ function readStored(): StoredInputs {
 }
 
 export default function Home() {
-  const [birthYear, setBirthYear] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [lifeExpectancy, setLifeExpectancy] = useState(DEFAULT_EXPECTANCY);
   const [result, setResult] = useState<LifeStatsType | null>(null);
   const [quote, setQuote] = useState<QuoteType | null>(null);
@@ -52,13 +53,12 @@ export default function Home() {
      which would cause hydration mismatches on return visits. */
   useEffect(() => {
     const stored = readStored();
-    const nextYear = stored.birthYear ?? "";
+    const nextDate = stored.birthDate ?? "";
     const nextExpectancy = stored.lifeExpectancy ?? DEFAULT_EXPECTANCY;
-    const parsed = Number(nextYear);
-    setBirthYear(nextYear);
+    setBirthDate(nextDate);
     setLifeExpectancy(nextExpectancy);
-    if (nextYear && isValidBirthYear(parsed)) {
-      setResult(calculateLifeStats(parsed, nextExpectancy));
+    if (nextDate && isValidBirthDate(nextDate)) {
+      setResult(calculateLifeStats(parseBirthDate(nextDate), nextExpectancy));
       setQuote(pickRandomQuote());
     }
     setHydrated(true);
@@ -66,15 +66,14 @@ export default function Home() {
   /* eslint-enable react-hooks/set-state-in-effect */
 
   function handleSubmit() {
-    const parsed = Number(birthYear);
-    if (!isValidBirthYear(parsed)) return;
-    const stats = calculateLifeStats(parsed, lifeExpectancy);
+    if (!isValidBirthDate(birthDate)) return;
+    const stats = calculateLifeStats(parseBirthDate(birthDate), lifeExpectancy);
     setResult(stats);
     setQuote((current) => pickRandomQuote(current ?? undefined));
     try {
       window.localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({ birthYear, lifeExpectancy }),
+        JSON.stringify({ birthDate, lifeExpectancy }),
       );
     } catch {
       // ignore storage errors (e.g. private mode, quota)
@@ -99,9 +98,9 @@ export default function Home() {
 
       <section>
         <LifeForm
-          birthYear={birthYear}
+          birthDate={birthDate}
           lifeExpectancy={lifeExpectancy}
-          onBirthYearChange={setBirthYear}
+          onBirthDateChange={setBirthDate}
           onLifeExpectancyChange={setLifeExpectancy}
           onSubmit={handleSubmit}
         />
@@ -123,7 +122,7 @@ export default function Home() {
           />
           <Quote quote={quote} />
           <SubscribeForm
-            birthYear={Number(birthYear)}
+            birthDate={birthDate}
             lifeExpectancy={lifeExpectancy}
           />
         </motion.section>

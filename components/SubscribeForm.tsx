@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 
 type Props = {
-  birthYear: number;
+  birthDate: string;
   lifeExpectancy: number;
 };
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-export function SubscribeForm({ birthYear, lifeExpectancy }: Props) {
+export function SubscribeForm({ birthDate, lifeExpectancy }: Props) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState<string | null>(null);
@@ -25,7 +25,7 @@ export function SubscribeForm({ birthYear, lifeExpectancy }: Props) {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email, birthYear, lifeExpectancy }),
+        body: JSON.stringify({ email, birthDate, lifeExpectancy }),
       });
       const data = (await res.json().catch(() => null)) as
         | { status?: string; error?: string }

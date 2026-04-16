@@ -17,11 +17,10 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 export function calculateLifeStats(
-  birthYear: number,
+  birthDate: Date,
   lifeExpectancy: number,
   now: Date = new Date(),
 ): LifeStats {
-  const birthDate = new Date(birthYear, 0, 1);
   const msLived = Math.max(0, now.getTime() - birthDate.getTime());
   const daysLived = msLived / MS_PER_DAY;
 
@@ -49,6 +48,13 @@ export function calculateLifeStats(
   };
 }
 
-export function isValidBirthYear(value: number, now: Date = new Date()): boolean {
-  return Number.isInteger(value) && value >= 1900 && value <= now.getFullYear();
+export function isValidBirthDate(value: string, now: Date = new Date()): boolean {
+  const date = new Date(value + "T00:00:00");
+  if (isNaN(date.getTime())) return false;
+  const min = new Date(1900, 0, 1);
+  return date >= min && date <= now;
+}
+
+export function parseBirthDate(value: string): Date {
+  return new Date(value + "T00:00:00");
 }

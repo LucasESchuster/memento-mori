@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { LifeForm } from "@/components/LifeForm";
-import { isValidBirthYear } from "@/lib/calculations";
+import { isValidBirthDate } from "@/lib/calculations";
 
 type Props = {
   token: string;
   email: string;
-  initialBirthYear: number;
+  initialBirthDate: string;
   initialLifeExpectancy: number;
 };
 
@@ -17,17 +17,16 @@ type Status = "idle" | "saving" | "saved" | "error";
 export function EditForm({
   token,
   email,
-  initialBirthYear,
+  initialBirthDate,
   initialLifeExpectancy,
 }: Props) {
-  const [birthYear, setBirthYear] = useState(String(initialBirthYear));
+  const [birthDate, setBirthDate] = useState(initialBirthDate);
   const [lifeExpectancy, setLifeExpectancy] = useState(initialLifeExpectancy);
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState<string | null>(null);
 
   async function handleSubmit() {
-    const parsed = Number(birthYear);
-    if (!isValidBirthYear(parsed)) return;
+    if (!isValidBirthDate(birthDate)) return;
     setStatus("saving");
     setMessage(null);
     try {
@@ -37,7 +36,7 @@ export function EditForm({
           method: "PATCH",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            birthYear: parsed,
+            birthDate,
             lifeExpectancy,
           }),
         },
@@ -49,7 +48,7 @@ export function EditForm({
         setStatus("error");
         setMessage(
           data?.error === "invalid_input"
-            ? "Dados inválidos. Verifique o ano e a expectativa."
+            ? "Dados inválidos. Verifique a data e a expectativa."
             : data?.error === "not_found"
               ? "Link inválido ou expirado."
               : "Não foi possível salvar. Tente novamente.",
@@ -79,10 +78,10 @@ export function EditForm({
       </div>
 
       <LifeForm
-        birthYear={birthYear}
+        birthDate={birthDate}
         lifeExpectancy={lifeExpectancy}
-        onBirthYearChange={(value) => {
-          setBirthYear(value);
+        onBirthDateChange={(value) => {
+          setBirthDate(value);
           if (status === "saved") setStatus("idle");
         }}
         onLifeExpectancyChange={(value) => {

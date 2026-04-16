@@ -6,7 +6,7 @@ import { sendConfirmEmail } from "@/lib/resend";
 
 const schema = z.object({
   email: z.string().email().max(254).toLowerCase(),
-  birthYear: z.number().int().min(1900).max(new Date().getFullYear()),
+  birthDate: z.string().date(),
   lifeExpectancy: z.number().int().min(60).max(100),
 });
 
@@ -54,7 +54,8 @@ export async function POST(req: Request) {
     );
   }
 
-  const { email, birthYear, lifeExpectancy } = parsed.data;
+  const { email, birthDate: birthDateStr, lifeExpectancy } = parsed.data;
+  const birthDate = new Date(birthDateStr + "T00:00:00");
   const existing = await prisma.subscription.findUnique({ where: { email } });
 
   if (existing && existing.confirmedAt && !existing.unsubscribedAt) {
@@ -68,7 +69,7 @@ export async function POST(req: Request) {
     ? await prisma.subscription.update({
         where: { id: existing.id },
         data: {
-          birthYear,
+          birthDate,
           lifeExpectancy,
           confirmToken,
           confirmedAt: null,
@@ -80,7 +81,7 @@ export async function POST(req: Request) {
     : await prisma.subscription.create({
         data: {
           email,
-          birthYear,
+          birthDate,
           lifeExpectancy,
           confirmToken,
           unsubscribeToken,

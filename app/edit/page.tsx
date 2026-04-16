@@ -61,7 +61,7 @@ export default async function EditPage({
     where: { unsubscribeToken: tokenStr },
     select: {
       email: true,
-      birthYear: true,
+      birthDate: true,
       lifeExpectancy: true,
       unsubscribedAt: true,
     },
@@ -88,7 +88,7 @@ export default async function EditPage({
       <EditForm
         token={tokenStr}
         email={sub.email}
-        initialBirthYear={sub.birthYear}
+        initialBirthDate={sub.birthDate.toISOString().split("T")[0]}
         initialLifeExpectancy={sub.lifeExpectancy}
       />
     </Shell>

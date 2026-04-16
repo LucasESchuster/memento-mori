@@ -17,7 +17,7 @@ async function main() {
   let failed = 0;
 
   for (const sub of subs) {
-    const currentWeek = weekOfLife(sub.birthYear, now);
+    const currentWeek = weekOfLife(sub.birthDate, now);
     const totalWeeks = sub.lifeExpectancy * 52;
 
     if (currentWeek <= sub.lastSentWeek) {
@@ -29,7 +29,7 @@ async function main() {
       continue;
     }
 
-    const stats = calculateLifeStats(sub.birthYear, sub.lifeExpectancy, now);
+    const stats = calculateLifeStats(sub.birthDate, sub.lifeExpectancy, now);
     const quote = pickRandomQuote();
 
     try {

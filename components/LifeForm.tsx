@@ -2,27 +2,27 @@
 
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { isValidBirthYear } from "@/lib/calculations";
+import { isValidBirthDate } from "@/lib/calculations";
 
 type Props = {
-  birthYear: string;
+  birthDate: string;
   lifeExpectancy: number;
-  onBirthYearChange: (value: string) => void;
+  onBirthDateChange: (value: string) => void;
   onLifeExpectancyChange: (value: number) => void;
   onSubmit: () => void;
   submitLabel?: string;
 };
 
 export function LifeForm({
-  birthYear,
+  birthDate,
   lifeExpectancy,
-  onBirthYearChange,
+  onBirthDateChange,
   onLifeExpectancyChange,
   onSubmit,
   submitLabel = "Calcular",
 }: Props) {
-  const parsed = Number(birthYear);
-  const canSubmit = birthYear.length > 0 && isValidBirthYear(parsed);
+  const canSubmit = birthDate.length > 0 && isValidBirthDate(birthDate);
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <form
@@ -34,20 +34,18 @@ export function LifeForm({
     >
       <div className="flex flex-col gap-2">
         <label
-          htmlFor="birth-year"
+          htmlFor="birth-date"
           className="text-sm tracking-wide text-neutral-500"
         >
-          Ano de nascimento
+          Data de nascimento
         </label>
         <Input
-          id="birth-year"
-          type="number"
-          inputMode="numeric"
-          min={1900}
-          max={new Date().getFullYear()}
-          placeholder="1990"
-          value={birthYear}
-          onChange={(e) => onBirthYearChange(e.target.value)}
+          id="birth-date"
+          type="date"
+          min="1900-01-01"
+          max={today}
+          value={birthDate}
+          onChange={(e) => onBirthDateChange(e.target.value)}
           className="h-11 rounded-none border-0 border-b border-neutral-200 bg-transparent px-0 text-lg font-light tracking-wide shadow-none transition-colors focus-visible:border-neutral-900 focus-visible:ring-0 md:text-lg"
         />
       </div>
