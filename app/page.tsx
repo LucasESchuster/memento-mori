@@ -90,9 +90,14 @@ export default function Home() {
       >
         <p className="font-serif text-sm tracking-wide text-neutral-500">
           por{" "}
-          <span className="font-medium text-neutral-900">
+          <a
+            href="https://lucaseduardoschuster.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-neutral-900 underline decoration-neutral-300 decoration-1 underline-offset-4 transition-colors hover:decoration-neutral-900"
+          >
             Lucas Eduardo Schuster
-          </span>
+          </a>
         </p>
         <div className="flex items-center gap-2">
           <a
@@ -168,7 +173,12 @@ export default function Home() {
             weeksLived={result.weeksLived}
             totalWeeks={result.totalWeeks}
           />
-          <Quote quote={quote} />
+          <Quote
+            quote={quote}
+            onRefresh={() =>
+              setQuote((current) => pickRandomQuote(current ?? undefined))
+            }
+          />
           <SubscribeForm
             birthDate={birthDate}
             lifeExpectancy={lifeExpectancy}

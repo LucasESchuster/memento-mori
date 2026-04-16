@@ -52,6 +52,46 @@ export const quotes: Quote[] = [
     text: "A vida, se bem usada, é longa. Não recebemos uma vida curta, nós a encurtamos.",
     author: "Sêneca",
   },
+  {
+    text: "Nada nos pertence; só o tempo é nosso.",
+    author: "Sêneca",
+  },
+  {
+    text: "Enquanto adiamos viver, a vida passa.",
+    author: "Sêneca",
+  },
+  {
+    text: "Aprender a viver leva a vida toda; e, o que mais te surpreenderá, leva a vida toda aprender a morrer.",
+    author: "Sêneca",
+  },
+  {
+    text: "Confina-te ao presente.",
+    author: "Marco Aurélio",
+  },
+  {
+    text: "A vida de um homem é aquilo que seus pensamentos fazem dela.",
+    author: "Marco Aurélio",
+  },
+  {
+    text: "Não são as coisas em si que perturbam os homens, mas os juízos que fazem delas.",
+    author: "Epicteto",
+  },
+  {
+    text: "Uma vida não examinada não vale a pena ser vivida.",
+    author: "Sócrates",
+  },
+  {
+    text: "Nada é permanente, exceto a mudança.",
+    author: "Heráclito",
+  },
+  {
+    text: "Filosofar é aprender a morrer.",
+    author: "Cícero",
+  },
+  {
+    text: "A morte não nos diz respeito: enquanto existimos, ela não está; quando ela chega, já não estamos.",
+    author: "Epicuro",
+  },
 ];
 
 export function pickRandomQuote(exclude?: Quote): Quote {
