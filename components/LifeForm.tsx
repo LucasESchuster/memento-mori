@@ -10,6 +10,7 @@ type Props = {
   onBirthYearChange: (value: string) => void;
   onLifeExpectancyChange: (value: number) => void;
   onSubmit: () => void;
+  submitLabel?: string;
 };
 
 export function LifeForm({
@@ -18,6 +19,7 @@ export function LifeForm({
   onBirthYearChange,
   onLifeExpectancyChange,
   onSubmit,
+  submitLabel = "Calcular",
 }: Props) {
   const parsed = Number(birthYear);
   const canSubmit = birthYear.length > 0 && isValidBirthYear(parsed);
@@ -79,7 +81,7 @@ export function LifeForm({
         disabled={!canSubmit}
         className="mt-2 h-11 rounded-none border border-neutral-900 bg-neutral-900 px-6 text-sm tracking-[0.2em] text-white uppercase transition-colors hover:bg-white hover:text-neutral-900 disabled:cursor-not-allowed disabled:border-neutral-200 disabled:bg-neutral-100 disabled:text-neutral-400 disabled:hover:bg-neutral-100 disabled:hover:text-neutral-400"
       >
-        Calcular
+        {submitLabel}
       </button>
     </form>
   );

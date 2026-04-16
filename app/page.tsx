@@ -7,6 +7,7 @@ import { LifeStats } from "@/components/LifeStats";
 import { LifeBar } from "@/components/LifeBar";
 import { WeeksGrid } from "@/components/WeeksGrid";
 import { Quote } from "@/components/Quote";
+import { SubscribeForm } from "@/components/SubscribeForm";
 import {
   calculateLifeStats,
   isValidBirthYear,
@@ -121,6 +122,10 @@ export default function Home() {
             totalWeeks={result.totalWeeks}
           />
           <Quote quote={quote} />
+          <SubscribeForm
+            birthYear={Number(birthYear)}
+            lifeExpectancy={lifeExpectancy}
+          />
         </motion.section>
       )}
 
