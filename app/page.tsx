@@ -145,7 +145,7 @@ export default function Home() {
           Memento Mori
         </h1>
         <p className="font-serif text-lg italic text-neutral-500">
-          Lembre-se de que vais morrer.
+          Lembra-te de que és mortal.
         </p>
       </motion.header>
 

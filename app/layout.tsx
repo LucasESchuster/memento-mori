@@ -15,7 +15,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Memento Mori — lembre-se de que vais morrer",
+  title: "Memento Mori — Lembra-te de que és mortal",
   description:
     "Visualize sua vida em semanas. Uma meditação sobre o tempo que resta.",
   openGraph: {

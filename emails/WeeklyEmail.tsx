@@ -46,7 +46,7 @@ export function WeeklyEmail({
       <Body style={body}>
         <Container style={container}>
           <Text style={title}>Memento Mori</Text>
-          <Text style={subtitle}>lembre-se de que vais morrer.</Text>
+          <Text style={subtitle}>Lembra-te de que és mortal.</Text>
 
           <Section style={section}>
             <Text style={big}>
