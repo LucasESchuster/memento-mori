@@ -14,6 +14,12 @@ const rateLimit = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 
+// Exported for tests only — reset the in-memory rate-limit map between tests.
+// See README-TESTING.md. This is the one production-code change the test plan allows itself.
+export function __resetRateLimit() {
+  rateLimit.clear();
+}
+
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const entry = rateLimit.get(ip);
