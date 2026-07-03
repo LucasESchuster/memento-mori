@@ -333,6 +333,7 @@ Env vars are loaded from a `.env` file via Next.js at runtime and explicitly via
 | `RESEND_API_KEY` | Email provider | yes | Validated lazily via `requireEnv()` in `lib/resend.ts`. |
 | `EMAIL_FROM` | Email provider | yes | Must be a domain verified in Resend. |
 | `APP_URL` | App config | yes | Used to construct confirm/unsubscribe/edit URLs embedded in emails. |
+| `NEXT_PUBLIC_CLARITY_PROJECT_ID` | Analytics | no | Microsoft Clarity project ID. When present, `components/Clarity.tsx` injects the Clarity snippet in the root layout. Must be `NEXT_PUBLIC_*` because the value ships to the browser. Absent → integration is a no-op. |
 | `NODE_ENV` | Runtime | no | Toggles Prisma log verbosity and skips global client cache in production. |
 
 ### Management

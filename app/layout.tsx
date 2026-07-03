@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Cormorant_Garamond } from "next/font/google";
+import Clarity from "@/components/Clarity";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -43,6 +44,7 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${geistSans.variable} ${cormorant.variable} h-full antialiased`}
     >
+      <Clarity />
       <body className="min-h-full bg-white text-neutral-900">{children}</body>
     </html>
   );
