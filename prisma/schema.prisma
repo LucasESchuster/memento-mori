@@ -16,9 +16,10 @@ model Subscription {
   confirmToken     String?   @unique
   confirmedAt      DateTime?
   unsubscribedAt   DateTime?
+  bouncedAt        DateTime?
   lastSentWeek     Int       @default(0)
   lastSentAt       DateTime?
   createdAt        DateTime  @default(now())
 
-  @@index([confirmedAt, unsubscribedAt, lastSentAt])
+  @@index([confirmedAt, unsubscribedAt, bouncedAt, lastSentAt])
 }

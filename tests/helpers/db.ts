@@ -47,6 +47,7 @@ export type SubscriptionOverrides = Partial<{
   confirmToken: string | null;
   confirmedAt: Date | null;
   unsubscribedAt: Date | null;
+  bouncedAt: Date | null;
   lastSentWeek: number;
   lastSentAt: Date | null;
 }>;
@@ -71,6 +72,8 @@ export async function createSubscription(overrides: SubscriptionOverrides = {}) 
         : overrides.confirmedAt,
     unsubscribedAt:
       overrides.unsubscribedAt === undefined ? null : overrides.unsubscribedAt,
+    bouncedAt:
+      overrides.bouncedAt === undefined ? null : overrides.bouncedAt,
     lastSentWeek: overrides.lastSentWeek ?? 0,
     lastSentAt:
       overrides.lastSentAt === undefined ? null : overrides.lastSentAt,

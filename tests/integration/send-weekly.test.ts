@@ -109,7 +109,7 @@ describe("scripts/send-weekly.ts (Feature D.13)", () => {
     expect(getSentEmails()).toHaveLength(0);
   });
 
-  it("skips unconfirmed and unsubscribed rows (filtered by findMany)", async () => {
+  it("skips unconfirmed, unsubscribed, and bounced rows (filtered by findMany)", async () => {
     await createSubscription({
       email: "unconfirmed@example.com",
       birthDate: BIRTH_30Y,
@@ -120,6 +120,11 @@ describe("scripts/send-weekly.ts (Feature D.13)", () => {
       email: "cancelled@example.com",
       birthDate: BIRTH_30Y,
       unsubscribedAt: new Date("2026-01-01T00:00:00Z"),
+    });
+    await createSubscription({
+      email: "bounced@example.com",
+      birthDate: BIRTH_30Y,
+      bouncedAt: new Date("2026-01-01T00:00:00Z"),
     });
     await runSendWeekly();
     expect(getSentEmails()).toHaveLength(0);

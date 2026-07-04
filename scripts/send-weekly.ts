@@ -7,7 +7,11 @@ import { pickRandomQuote } from "../lib/quotes";
 async function main() {
   const now = new Date();
   const subs = await prisma.subscription.findMany({
-    where: { confirmedAt: { not: null }, unsubscribedAt: null },
+    where: {
+      confirmedAt: { not: null },
+      unsubscribedAt: null,
+      bouncedAt: null,
+    },
   });
 
   console.log(`[send-weekly] ${subs.length} subscriptions to evaluate`);
