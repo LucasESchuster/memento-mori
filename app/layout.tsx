@@ -1,18 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Cormorant_Garamond } from "next/font/google";
+import { Cormorant_Garamond, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import Clarity from "@/components/Clarity";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
   style: ["normal", "italic"],
-  weight: ["400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+});
+
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -42,10 +49,12 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${cormorant.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${plexMono.variable} ${plexSans.variable} h-full antialiased`}
     >
       <Clarity />
-      <body className="min-h-full bg-white text-neutral-900">{children}</body>
+      <body className="min-h-full bg-[#efe9dd] text-[#1a1613] font-serif">
+        {children}
+      </body>
     </html>
   );
 }

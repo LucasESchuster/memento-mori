@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 
 const patchSchema = z.object({
   birthDate: z.string().date(),
-  lifeExpectancy: z.number().int().min(60).max(100),
+  lifeExpectancy: z.number().int().min(40).max(110),
 });
 
 function getToken(req: Request): string | null {

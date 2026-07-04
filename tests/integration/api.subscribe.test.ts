@@ -183,7 +183,7 @@ describe("POST /api/subscribe — validation (Feature B.7)", () => {
     expect(Array.isArray(body.issues)).toBe(true);
   });
 
-  it.each([50, 101])(
+  it.each([39, 111])(
     "returns 400 invalid_input for lifeExpectancy out of range: %i",
     async (le) => {
       const res = await subscribe({

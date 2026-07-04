@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { render, screen, waitFor, act } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Home from "@/app/page";
 
@@ -15,19 +15,17 @@ afterEach(() => {
 });
 
 describe("Home page (Feature F.19)", () => {
-  it("first visit: form is visible, grid is hidden", async () => {
+  it("first visit: form is visible and the hero shows the waiting state", async () => {
     render(<Home />);
     expect(await screen.findByLabelText(/data de nascimento/i)).toBeInTheDocument();
-    expect(screen.queryByText(/sua vida em semanas/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/aguardando início/i)).toBeInTheDocument();
   });
 
-  it("submitting a valid date persists to localStorage", async () => {
+  it("typing a valid date persists to localStorage in real time", async () => {
     const user = userEvent.setup();
     render(<Home />);
     const input = await screen.findByLabelText(/data de nascimento/i);
     await user.type(input, "1990-05-15");
-    const submit = screen.getByRole("button", { name: /calcular/i });
-    await user.click(submit);
 
     await waitFor(() => {
       const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -37,48 +35,43 @@ describe("Home page (Feature F.19)", () => {
         lifeExpectancy: 80,
       });
     });
-    expect(await screen.findByText(/sua vida em semanas/i)).toBeInTheDocument();
+    expect(await screen.findByText(/você está vivo há/i)).toBeInTheDocument();
   });
 
-  it("reload with stored inputs shows the grid without interaction", async () => {
+  it("reload with stored inputs shows the lived state without interaction", async () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ birthDate: "1990-05-15", lifeExpectancy: 80 }),
     );
     render(<Home />);
-    expect(await screen.findByText(/sua vida em semanas/i)).toBeInTheDocument();
+    expect(await screen.findByText(/você está vivo há/i)).toBeInTheDocument();
   });
 
-  it("quote refresh rotates the quote (seeded Math.random)", async () => {
+  it("quote refresh rotates the meditation quote", async () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ birthDate: "1990-05-15", lifeExpectancy: 80 }),
     );
-    // Start with a predictable quote (index 0 on first pick).
     let next = 0;
     vi.spyOn(Math, "random").mockImplementation(() => next);
 
     const user = userEvent.setup();
     render(<Home />);
-    await screen.findByRole("button", { name: /nova citação/i });
-    const firstAuthor = screen.getAllByText(/—/)[0]?.textContent ?? "";
+    const button = await screen.findByRole("button", { name: /nova meditação/i });
+    const firstText = document.querySelector("blockquote p")?.textContent ?? "";
 
-    // Force a different pick on refresh.
     next = 0.5;
-    await user.click(screen.getByRole("button", { name: /nova citação/i }));
+    await user.click(button);
     await waitFor(() => {
-      const newAuthor = screen.getAllByText(/—/)[0]?.textContent ?? "";
-      expect(newAuthor).not.toBe(firstAuthor);
+      const nowText = document.querySelector("blockquote p")?.textContent ?? "";
+      expect(nowText).not.toBe(firstText);
     });
   });
 
   it("ignores malformed localStorage payload", async () => {
     window.localStorage.setItem(STORAGE_KEY, "not-json{");
     expect(() => render(<Home />)).not.toThrow();
-    // Should behave like a first-time visit: form visible, no grid.
-    expect(
-      await screen.findByLabelText(/data de nascimento/i),
-    ).toBeInTheDocument();
-    expect(screen.queryByText(/sua vida em semanas/i)).not.toBeInTheDocument();
+    expect(await screen.findByLabelText(/data de nascimento/i)).toBeInTheDocument();
+    expect(screen.getByText(/aguardando início/i)).toBeInTheDocument();
   });
 });

@@ -7,7 +7,7 @@ import { sendConfirmEmail } from "@/lib/resend";
 const schema = z.object({
   email: z.string().email().max(254).toLowerCase(),
   birthDate: z.string().date(),
-  lifeExpectancy: z.number().int().min(60).max(100),
+  lifeExpectancy: z.number().int().min(40).max(110),
 });
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();

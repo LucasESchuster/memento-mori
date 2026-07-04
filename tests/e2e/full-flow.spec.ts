@@ -37,12 +37,13 @@ test("subscribe → confirm → send → edit → unsubscribe", async ({
   // --- 1. Subscribe via the home page -----------------------------------
   await page.goto("/");
   await page.getByLabel(/data de nascimento/i).fill("1990-05-15");
-  await page.getByRole("button", { name: /calcular/i }).click();
-  // Wait for the grid to render.
-  await expect(page.getByText(/sua vida em semanas/i)).toBeVisible();
+  // Realtime: hero flips to lived state as soon as a valid date is typed.
+  await expect(page.getByText(/você está vivo há/i)).toBeVisible();
 
+  // Scroll to and fill the subscribe form (chapter V).
+  await page.locator("#carta").scrollIntoViewIfNeeded();
   await page.getByPlaceholder("voce@exemplo.com").fill(email);
-  await page.getByRole("button", { name: /receber lembretes/i }).click();
+  await page.getByRole("button", { name: /receber lembretes semanais/i }).click();
 
   await expect(
     page.getByText(new RegExp(`Enviamos um email de confirmação para ${email}`)),

@@ -122,8 +122,8 @@ describe("PATCH /api/subscription (Feature B.11)", () => {
 
   it.each([
     { birthDate: "not-a-date", lifeExpectancy: 80 },
-    { birthDate: "1990-05-15", lifeExpectancy: 50 },
-    { birthDate: "1990-05-15", lifeExpectancy: 101 },
+    { birthDate: "1990-05-15", lifeExpectancy: 39 },
+    { birthDate: "1990-05-15", lifeExpectancy: 111 },
     { birthDate: "1990-05-15", lifeExpectancy: 80.5 },
   ])("returns 400 invalid_input for %j", async (body) => {
     await createSubscription({ unsubscribeToken: "pv_tok" });

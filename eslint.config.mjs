@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Third-party design handoff bundle — not our code, not shipped.
+    "memento-mori-site-redesign/**",
+    // Coverage reports.
+    "coverage/**",
   ]),
 ]);
 
