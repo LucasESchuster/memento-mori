@@ -231,7 +231,10 @@ describe("POST /api/subscribe — validation (Feature B.7)", () => {
     expect(res.status).toBe(400);
   });
 
-  it("returns 400 invalid_input when turnstileToken is missing", async () => {
+  it("treats a missing turnstileToken as a failed captcha (not invalid_input)", async () => {
+    // Schema accepts a missing token; enforcement is in verifyTurnstile, which
+    // here (mocked) rejects it — mirroring a configured secret + empty token.
+    verifyTurnstileMock.mockResolvedValue(false);
     const res = await subscribePOST(
       makeJsonRequest(
         "https://example.test/api/subscribe",
@@ -246,7 +249,9 @@ describe("POST /api/subscribe — validation (Feature B.7)", () => {
     );
     expect(res.status).toBe(400);
     const body = await res.json();
-    expect(body.error).toBe("invalid_input");
+    expect(body.error).toBe("captcha_failed");
+    // verifyTurnstile is called with an empty string when no token is sent.
+    expect(verifyTurnstileMock).toHaveBeenCalledWith("", expect.anything());
   });
 });
 

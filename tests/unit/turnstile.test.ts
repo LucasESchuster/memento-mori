@@ -22,6 +22,13 @@ describe("verifyTurnstile (Feature B.7)", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it("returns false without calling the network when the token is empty but a secret is set", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    await expect(verifyTurnstile("")).resolves.toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("returns true when siteverify responds success: true", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       json: async () => ({ success: true }),

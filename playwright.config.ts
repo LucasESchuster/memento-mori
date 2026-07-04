@@ -25,6 +25,10 @@ export default defineConfig({
       EMAIL_FROM: "tests@example.com",
       APP_URL: process.env.E2E_BASE_URL ?? "http://localhost:3000",
       NODE_ENV: "development",
+      // Force Turnstile off so the flow is deterministic regardless of a local
+      // .env: no site key hides the widget, no secret makes verify fail-open.
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: "",
+      TURNSTILE_SECRET_KEY: "",
     },
   },
 });

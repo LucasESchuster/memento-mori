@@ -9,7 +9,10 @@ const schema = z.object({
   email: z.string().email().max(254).toLowerCase(),
   birthDate: z.string().date(),
   lifeExpectancy: z.number().int().min(40).max(110),
-  turnstileToken: z.string().min(1),
+  // Optional at the schema level: enforcement lives in verifyTurnstile, which
+  // fails open when TURNSTILE_SECRET_KEY is unset (dev / CI without keys) and
+  // rejects an empty token when a secret is configured.
+  turnstileToken: z.string().nullish(),
 });
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
@@ -66,7 +69,7 @@ export async function POST(req: Request) {
     parsed.data;
 
   // Fail-open when TURNSTILE_SECRET_KEY is unset (see lib/turnstile.ts).
-  const captchaOk = await verifyTurnstile(turnstileToken, ip);
+  const captchaOk = await verifyTurnstile(turnstileToken ?? "", ip);
   if (!captchaOk) {
     return NextResponse.json({ error: "captcha_failed" }, { status: 400 });
   }
