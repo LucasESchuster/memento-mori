@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #d8d2c4; font-family: 'Cormorant Garamond', 'Times New Roman', serif; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    a { color: inherit; text-decoration: none; }
+    @keyframes breathe { 0%,100% { opacity: 0.35 } 50% { opacity: 1 } }
+  </style>
+</helmet>
+
+<div style="min-height: 100vh; background: #d8d2c4; padding: 48px 24px 96px;">
+
+  <!-- envelope meta strip (context: this is the email as it arrives) -->
+  <div style="max-width: 640px; margin: 0 auto 24px; display: flex; justify-content: space-between; align-items: baseline; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: #6b6259;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #a04e2a; animation: breathe 3.2s ease-in-out infinite;"></span>
+      <span>Email semanal · pré-visualização</span>
+    </div>
+    <span>domingo, 06:00</span>
+  </div>
+
+  <!-- the email itself -->
+  <article style="max-width: 640px; margin: 0 auto; background: #efe9dd; border: 1px solid #c9c0ae; padding: 0; box-shadow: 0 40px 80px -30px rgba(26,22,19,0.25); position: relative;">
+
+    <!-- masthead -->
+    <header style="padding: 48px 56px 32px; border-bottom: 1px solid #d4cab5;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: #a04e2a; margin-bottom: 40px;">
+        <span>Memento Mori · No. {{ issueNo }}</span>
+        <span style="color: #8a8175;">{{ issueDate }}</span>
+      </div>
+
+      <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 56px; line-height: 0.95; letter-spacing: -0.03em; margin: 0 0 12px; color: #1a1613;">
+        Memento<br><em style="font-weight: 300; color: #5c5449;">mori.</em>
+      </h1>
+      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: 18px; line-height: 1.4; color: #6b6259; margin: 0;">
+        Lembra-te de que és mortal.
+      </p>
+    </header>
+
+    <!-- hero week number -->
+    <section style="padding: 48px 56px 24px;">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: #a04e2a; margin-bottom: 20px;">
+        Olá, {{ firstName }}. Nesta semana —
+      </div>
+
+      <div style="display: flex; align-items: baseline; gap: 20px; margin-bottom: 20px;">
+        <span style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 128px; line-height: 0.85; letter-spacing: -0.04em; color: #1a1613;">{{ weekNumber }}</span>
+        <div>
+          <div style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 26px; color: #a04e2a; line-height: 1;">semana</div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: #6b6259; margin-top: 8px;">completa da sua vida</div>
+        </div>
+      </div>
+
+      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: 19px; line-height: 1.55; color: #5c5449; margin: 0; max-width: 480px;">
+        De aproximadamente <span style="color: #1a1613; font-style: normal;">{{ totalWeeks }}</span> semanas que compõem a sua expectativa, restam-lhe cerca de <span style="color: #a04e2a; font-style: normal;">{{ weeksRemain }}</span>.
+      </p>
+    </section>
+
+    <!-- mini weeks-of-life visualisation strip -->
+    <section style="padding: 24px 56px 32px;">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: #6b6259; margin-bottom: 14px; display: flex; justify-content: space-between;">
+        <span>a sua vida em semanas</span>
+        <span style="color: #a04e2a;">◦ esta semana</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(52, 1fr); gap: 1.5px;">
+        <sc-for list="{{ weekCells }}" as="c" hint-placeholder-count="200">
+          <div style="{{ c.style }}"></div>
+        </sc-for>
+      </div>
+      <div style="margin-top: 10px; display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.2em; color: #a89e88;">
+        <span>0 anos</span>
+        <span>{{ expectancy }} anos</span>
+      </div>
+    </section>
+
+    <!-- stat grid -->
+    <section style="padding: 24px 56px 40px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px 40px; padding: 32px 0; border-top: 1px solid #d4cab5; border-bottom: 1px solid #d4cab5;">
+        <div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: #6b6259; margin-bottom: 8px;">Anos vividos</div>
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 400; line-height: 1; color: #1a1613;">{{ yearsLived }}</div>
+        </div>
+        <div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: #6b6259; margin-bottom: 8px;">Anos restantes</div>
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 400; line-height: 1; color: #1a1613;">{{ yearsRemain }}</div>
+        </div>
+        <div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: #6b6259; margin-bottom: 8px;">Dias restantes</div>
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 400; line-height: 1; color: #1a1613;">{{ daysRemain }}</div>
+        </div>
+        <div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: #6b6259; margin-bottom: 8px;">Percentual vivido</div>
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 400; line-height: 1; color: #a04e2a;">{{ lifePct }}</div>
+        </div>
+      </div>
+
+      <!-- progress bar -->
+      <div style="margin-top: 24px;">
+        <div style="height: 1px; background: #d4cab5; position: relative;">
+          <div style="{{ progressBarStyle }}"></div>
+          <div style="{{ progressMarkerStyle }}"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.24em; color: #a89e88; text-transform: uppercase;">
+          <span>nascimento</span>
+          <span style="color: #a04e2a;">◦ você está aqui</span>
+          <span>fim provável</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- meditation -->
+    <section style="padding: 8px 56px 48px;">
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+        <span style="height: 1px; width: 40px; background: #a04e2a;"></span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase; color: #a04e2a;">Meditação da semana</span>
+      </div>
+
+      <blockquote style="margin: 0;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: 30px; line-height: 1.25; letter-spacing: -0.01em; color: #1a1613; margin: 0 0 20px; text-wrap: balance;">
+          &ldquo;{{ quoteText }}&rdquo;
+        </p>
+        <footer style="font-family: 'Cormorant Garamond', serif; font-size: 15px; color: #6b6259; font-style: italic; display: flex; align-items: center; gap: 12px;">
+          <span style="height: 1px; width: 20px; background: #8a8175;"></span>
+          {{ quoteAuthor }}
+        </footer>
+      </blockquote>
+
+      <div style="margin-top: 40px; padding: 24px; background: #e6dfd0; border-left: 2px solid #a04e2a;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: #a04e2a; margin-bottom: 10px;">Um prompt para a semana</div>
+        <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: 20px; line-height: 1.4; color: #1a1613; margin: 0;">
+          {{ promptText }}
+        </p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="padding: 0 56px 48px;">
+      <a href="#" style="display: block; padding: 20px; background: #1a1613; color: #efe9dd; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;">
+        Visualizar no site &nbsp;→
+      </a>
+      <div style="margin-top: 14px; text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: #8a8175;">
+        veja a sua vida inteira numa página &middot; {{ totalWeeks }} quadrados
+      </div>
+    </section>
+
+    <!-- footer -->
+    <footer style="padding: 32px 56px 40px; background: #e6dfd0; border-top: 1px solid #d4cab5;">
+      <div style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #6b6259; text-align: center; margin-bottom: 24px;">
+        tempus fugit, <em style="color: #a04e2a;">memento mori</em>.
+      </div>
+      <div style="border-top: 1px solid #d4cab5; padding-top: 20px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.18em; color: #8a8175; line-height: 1.9; text-align: center;">
+        <div>Você recebe este email porque se inscreveu em<br><a href="#" style="color: #6b6259; border-bottom: 1px solid #c9c0ae;">memento-mori.lucaseduardoschuster.com</a></div>
+        <div style="margin-top: 16px; display: flex; justify-content: center; gap: 24px;">
+          <a href="#" style="color: #8a8175; border-bottom: 1px solid #c9c0ae;">Editar preferências</a>
+          <a href="#" style="color: #8a8175; border-bottom: 1px solid #c9c0ae;">Cancelar lembretes</a>
+        </div>
+        <div style="margin-top: 24px; color: #a89e88;">© Lucas E. Schuster · MMXXVI</div>
+      </div>
+    </footer>
+
+  </article>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 720, &quot;height&quot;: 1600}}">
+class Component extends DCLogic {
+  state = {
+    // simulated recipient — matches the sample email (week 1019, ~19 years lived)
+    firstName: 'Lucas',
+    birthDateStr: '2005-11-15',
+    expectancy: 85,
+    now: Date.now(),
+    quoteIdx: 0,
+  };
+
+  quotes = [
+    { text: 'Não são as coisas em si que perturbam os homens, mas os juízos que fazem delas.', author: 'Epicteto' },
+    { text: 'Não é que tenhamos pouco tempo, mas que perdemos muito.', author: 'Sêneca' },
+    { text: 'A morte sorri para todos nós. Tudo o que podemos fazer é sorrir de volta.', author: 'Marco Aurélio' },
+    { text: 'Lembra-te: podes deixar a vida agora mesmo. Que isto guie o que fazes, dizes e pensas.', author: 'Marco Aurélio' },
+  ];
+
+  prompts = [
+    'O que fizeste esta semana que valeu uma semana da tua vida?',
+    'Se restassem 1.000 semanas, o que farias amanhã?',
+    'A quem devias ligar antes que seja tarde?',
+    'Que hábito, se mantido por 10 anos, mudaria tudo?',
+  ];
+
+  renderVals() {
+    const { firstName, birthDateStr, expectancy, now, quoteIdx } = this.state;
+
+    const birth = new Date(birthDateStr + 'T00:00:00');
+    const YEAR_MS = 365.25 * 86400000;
+    const WEEK_MS = 7 * 86400000;
+    const totalMs = expectancy * YEAR_MS;
+    const livedMs = Math.max(0, now - birth.getTime());
+    const remainMs = Math.max(0, totalMs - livedMs);
+    const percent = Math.min(100, (livedMs / totalMs) * 100);
+
+    const yearsLived = Math.floor(livedMs / YEAR_MS);
+    const yearsRemain = Math.max(0, expectancy - yearsLived);
+    const daysRemain = Math.max(0, Math.floor(remainMs / 86400000));
+    const weeksLived = Math.floor(livedMs / WEEK_MS);
+    const weeksRemain = Math.max(0, Math.floor(remainMs / WEEK_MS));
+    const totalWeeks = Math.floor(totalMs / WEEK_MS);
+
+    const fmt = (n) => Number(n).toLocaleString('pt-BR');
+
+    // Mini life-in-weeks strip: 52 cols × ceil(expectancy) rows, cap rows to keep tiny
+    const rows = expectancy; // one row per year
+    const cols = 52;
+    const total = rows * cols;
+    const cells = [];
+    for (let i = 0; i < total; i++) {
+      let bg, border;
+      if (i === weeksLived) { bg = '#a04e2a'; border = '0'; }
+      else if (i < weeksLived) { bg = '#1a1613'; border = '0'; }
+      else { bg = 'transparent'; border = '0.5px solid #c9c0ae'; }
+      cells.push({
+        style: {
+          width: '100%',
+          aspectRatio: '1 / 1',
+          background: bg,
+          border,
+        },
+      });
+    }
+
+    // Issue date — the sunday of the current week
+    const d = new Date(now);
+    const day = d.getDay();
+    const sun = new Date(d.getTime() - day * 86400000);
+    const monthNames = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    const issueDate = `${String(sun.getDate()).padStart(2,'0')} ${monthNames[sun.getMonth()]} ${sun.getFullYear()}`;
+
+    const pctStr = percent.toFixed(1) + '%';
+
+    return {
+      firstName,
+      issueNo: fmt(weeksLived),
+      issueDate,
+      weekNumber: fmt(weeksLived),
+      totalWeeks: fmt(totalWeeks),
+      weeksRemain: fmt(weeksRemain),
+      yearsLived: fmt(yearsLived),
+      yearsRemain: fmt(yearsRemain),
+      daysRemain: fmt(daysRemain),
+      lifePct: pctStr,
+      expectancy,
+
+      weekCells: cells,
+
+      progressBarStyle: {
+        position: 'absolute',
+        left: '0',
+        top: '-0.5px',
+        height: '2px',
+        background: '#1a1613',
+        width: percent.toFixed(2) + '%',
+      },
+      progressMarkerStyle: {
+        position: 'absolute',
+        top: '50%',
+        left: percent.toFixed(2) + '%',
+        transform: 'translate(-50%, -50%)',
+        width: '9px',
+        height: '9px',
+        background: '#a04e2a',
+        transform: 'translate(-50%, -50%) rotate(45deg)',
+      },
+
+      quoteText: this.quotes[quoteIdx % this.quotes.length].text,
+      quoteAuthor: this.quotes[quoteIdx % this.quotes.length].author,
+      promptText: this.prompts[quoteIdx % this.prompts.length],
+    };
+  }
+}
+</script>
+</body>
+</html>
