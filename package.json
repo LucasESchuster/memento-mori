@@ -18,6 +18,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.5.3",
     "@prisma/client": "^6.19.3",
     "@react-email/components": "^1.0.12",
     "class-variance-authority": "^0.7.1",

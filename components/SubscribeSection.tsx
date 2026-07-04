@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 
 type Props = {
   birthDate: string;
@@ -10,10 +11,18 @@ type Props = {
 
 type Status = "idle" | "sending" | "sent" | "error";
 
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
 export function SubscribeSection({ birthDate, lifeExpectancy, canSubmit }: Props) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
+
+  // Cleared on expiry or widget error — the token is single-use and stale
+  // tokens must not be submitted.
+  const clearCaptcha = () => setCaptchaToken(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -24,19 +33,29 @@ export function SubscribeSection({ birthDate, lifeExpectancy, canSubmit }: Props
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email, birthDate, lifeExpectancy }),
+        body: JSON.stringify({
+          email,
+          birthDate,
+          lifeExpectancy,
+          turnstileToken: captchaToken,
+        }),
       });
       const data = (await res.json().catch(() => null)) as
         | { status?: string; error?: string }
         | null;
       if (!res.ok) {
+        // Turnstile tokens are single-use — rearm the widget for a retry.
+        turnstileRef.current?.reset();
+        setCaptchaToken(null);
         setStatus("error");
         setMessage(
           data?.error === "too_many_requests"
             ? "Muitas tentativas. Tente novamente em uma hora."
-            : data?.error === "invalid_input"
-              ? "Dados inválidos. Verifique o email."
-              : "Não foi possível inscrever. Tente novamente em instantes.",
+            : data?.error === "captcha_failed"
+              ? "Falha na verificação anti-robô. Tente novamente."
+              : data?.error === "invalid_input"
+                ? "Dados inválidos. Verifique o email."
+                : "Não foi possível inscrever. Tente novamente em instantes.",
         );
         return;
       }
@@ -116,9 +135,30 @@ export function SubscribeSection({ birthDate, lifeExpectancy, canSubmit }: Props
                 className="w-full border-0 border-b border-[color:var(--ink)] bg-transparent px-0 py-3 font-serif text-[28px] text-[color:var(--ink)] outline-none placeholder:text-[color:var(--ink-fade)]"
               />
             </div>
+            {turnstileSiteKey && (
+              <div className="mb-5">
+                <Turnstile
+                  ref={turnstileRef}
+                  siteKey={turnstileSiteKey}
+                  options={{
+                    theme: "light",
+                    language: "pt-BR",
+                    size: "flexible",
+                  }}
+                  onSuccess={setCaptchaToken}
+                  onExpire={clearCaptcha}
+                  onError={clearCaptcha}
+                />
+              </div>
+            )}
             <button
               type="submit"
-              disabled={status === "sending" || !email || !canSubmit}
+              disabled={
+                status === "sending" ||
+                !email ||
+                !canSubmit ||
+                (!!turnstileSiteKey && !captchaToken)
+              }
               className="w-full bg-[color:var(--ink)] px-6 py-5 font-mono text-[11px] uppercase tracking-[0.28em] text-[color:var(--paper)] transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
             >
               {label} →

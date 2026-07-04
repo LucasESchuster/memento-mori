@@ -3,11 +3,13 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { randomToken } from "@/lib/tokens";
 import { sendConfirmEmail } from "@/lib/resend";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 const schema = z.object({
   email: z.string().email().max(254).toLowerCase(),
   birthDate: z.string().date(),
   lifeExpectancy: z.number().int().min(40).max(110),
+  turnstileToken: z.string().min(1),
 });
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
@@ -60,7 +62,15 @@ export async function POST(req: Request) {
     );
   }
 
-  const { email, birthDate: birthDateStr, lifeExpectancy } = parsed.data;
+  const { email, birthDate: birthDateStr, lifeExpectancy, turnstileToken } =
+    parsed.data;
+
+  // Fail-open when TURNSTILE_SECRET_KEY is unset (see lib/turnstile.ts).
+  const captchaOk = await verifyTurnstile(turnstileToken, ip);
+  if (!captchaOk) {
+    return NextResponse.json({ error: "captcha_failed" }, { status: 400 });
+  }
+
   const birthDate = new Date(birthDateStr + "T00:00:00");
   const existing = await prisma.subscription.findUnique({ where: { email } });
 

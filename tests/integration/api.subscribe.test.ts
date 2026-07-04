@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, afterAll } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  beforeEach,
+  afterAll,
+  vi,
+} from "vitest";
 import {
   installResendMock,
   resetSentEmails,
@@ -7,6 +15,13 @@ import {
 } from "@/tests/helpers/resend";
 
 installResendMock();
+
+// Turnstile verification is mocked to pass by default; individual tests can
+// override the return value to exercise the captcha_failed path.
+const verifyTurnstileMock = vi.fn(async () => true);
+vi.mock("@/lib/turnstile", () => ({
+  verifyTurnstile: (...args: unknown[]) => verifyTurnstileMock(...args),
+}));
 
 import {
   prisma,
@@ -34,14 +49,24 @@ beforeEach(async () => {
   await truncate();
   resetSentEmails();
   __resetRateLimit();
+  verifyTurnstileMock.mockReset();
+  verifyTurnstileMock.mockResolvedValue(true);
 });
 
-function subscribe(body: unknown, headers: Record<string, string> = {}) {
+function subscribe(
+  body: Record<string, unknown>,
+  headers: Record<string, string> = {},
+) {
   return subscribePOST(
-    makeJsonRequest("https://example.test/api/subscribe", "POST", body, {
-      "x-forwarded-for": "1.2.3.4",
-      ...headers,
-    }),
+    makeJsonRequest(
+      "https://example.test/api/subscribe",
+      "POST",
+      { turnstileToken: "test-token", ...body },
+      {
+        "x-forwarded-for": "1.2.3.4",
+        ...headers,
+      },
+    ),
   );
 }
 
@@ -205,6 +230,44 @@ describe("POST /api/subscribe — validation (Feature B.7)", () => {
     });
     expect(res.status).toBe(400);
   });
+
+  it("returns 400 invalid_input when turnstileToken is missing", async () => {
+    const res = await subscribePOST(
+      makeJsonRequest(
+        "https://example.test/api/subscribe",
+        "POST",
+        {
+          email: "user@example.com",
+          birthDate: "1990-05-15",
+          lifeExpectancy: 80,
+        },
+        { "x-forwarded-for": "1.2.3.4" },
+      ),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe("invalid_input");
+  });
+});
+
+describe("POST /api/subscribe — Turnstile verification (Feature B.7)", () => {
+  it("returns 400 captcha_failed when verification fails and does not send email", async () => {
+    verifyTurnstileMock.mockResolvedValue(false);
+    const res = await subscribe({
+      email: "bot@example.com",
+      birthDate: "1990-05-15",
+      lifeExpectancy: 80,
+    });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe("captcha_failed");
+    expect(getSentEmails()).toHaveLength(0);
+
+    const row = await prisma.subscription.findUnique({
+      where: { email: "bot@example.com" },
+    });
+    expect(row).toBeNull();
+  });
 });
 
 describe("POST /api/subscribe — rate limiting (Feature B.7)", () => {
@@ -262,6 +325,7 @@ describe("POST /api/subscribe — IP extraction (Feature B.7)", () => {
             email: `x${i}@example.com`,
             birthDate: "1990-05-15",
             lifeExpectancy: 80,
+            turnstileToken: "test-token",
           },
           { "x-forwarded-for": "9.9.9.9, 10.0.0.5" },
         ),
@@ -293,6 +357,7 @@ describe("POST /api/subscribe — IP extraction (Feature B.7)", () => {
             email: `r${i}@example.com`,
             birthDate: "1990-05-15",
             lifeExpectancy: 80,
+            turnstileToken: "test-token",
           },
           { "x-real-ip": "7.7.7.7" },
         ),
@@ -324,6 +389,7 @@ describe("POST /api/subscribe — IP extraction (Feature B.7)", () => {
             email: `n${i}@example.com`,
             birthDate: "1990-05-15",
             lifeExpectancy: 80,
+            turnstileToken: "test-token",
           }),
         }),
       );
