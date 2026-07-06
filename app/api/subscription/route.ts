@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 
 const patchSchema = z.object({
@@ -74,4 +75,30 @@ export async function PATCH(req: Request) {
   });
 
   return NextResponse.json({ status: "updated" });
+}
+
+// LGPD right to erasure (art. 18, VI): hard-deletes the row and all its PII.
+// Authorized by possession of the unsubscribeToken, same as GET/PATCH.
+export async function DELETE(req: Request) {
+  const token = getToken(req);
+  if (!token) {
+    return NextResponse.json({ error: "missing_token" }, { status: 400 });
+  }
+
+  try {
+    await prisma.subscription.delete({
+      where: { unsubscribeToken: token },
+    });
+  } catch (err) {
+    // P2025 = record to delete does not exist (token already used / invalid).
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025"
+    ) {
+      return NextResponse.json({ error: "not_found" }, { status: 404 });
+    }
+    throw err;
+  }
+
+  return NextResponse.json({ status: "deleted" });
 }

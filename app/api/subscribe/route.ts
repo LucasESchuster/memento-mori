@@ -13,6 +13,9 @@ const schema = z.object({
   // fails open when TURNSTILE_SECRET_KEY is unset (dev / CI without keys) and
   // rejects an empty token when a secret is configured.
   turnstileToken: z.string().nullish(),
+  // LGPD consent — must be explicitly true. A missing/false value fails
+  // validation, so the record is never created without recorded consent.
+  consent: z.literal(true),
 });
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
@@ -83,6 +86,7 @@ export async function POST(req: Request) {
 
   const confirmToken = randomToken();
   const unsubscribeToken = existing?.unsubscribeToken ?? randomToken();
+  const consentAt = new Date();
 
   const sub = existing
     ? await prisma.subscription.update({
@@ -92,6 +96,7 @@ export async function POST(req: Request) {
           lifeExpectancy,
           confirmToken,
           confirmedAt: null,
+          consentAt,
           unsubscribedAt: null,
           lastSentWeek: 0,
           lastSentAt: null,
@@ -103,6 +108,7 @@ export async function POST(req: Request) {
           birthDate,
           lifeExpectancy,
           confirmToken,
+          consentAt,
           unsubscribeToken,
         },
       });

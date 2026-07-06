@@ -15,6 +15,7 @@ const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export function SubscribeSection({ birthDate, lifeExpectancy, canSubmit }: Props) {
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState<string | null>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
@@ -38,6 +39,7 @@ export function SubscribeSection({ birthDate, lifeExpectancy, canSubmit }: Props
           birthDate,
           lifeExpectancy,
           turnstileToken: captchaToken,
+          consent,
         }),
       });
       const data = (await res.json().catch(() => null)) as
@@ -151,11 +153,35 @@ export function SubscribeSection({ birthDate, lifeExpectancy, canSubmit }: Props
                 />
               </div>
             )}
+            <label
+              htmlFor="subscribe-consent"
+              className="mb-5 flex cursor-pointer items-start gap-3 font-sans text-[13px] leading-relaxed text-[color:var(--ink-soft)]"
+            >
+              <input
+                id="subscribe-consent"
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                disabled={status === "sending"}
+                className="mt-1 h-4 w-4 shrink-0 accent-[color:var(--ink)]"
+              />
+              <span>
+                Li e concordo com a{" "}
+                <a
+                  href="/privacidade"
+                  className="border-b border-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)]"
+                >
+                  Política de Privacidade
+                </a>{" "}
+                e em receber os lembretes por email.
+              </span>
+            </label>
             <button
               type="submit"
               disabled={
                 status === "sending" ||
                 !email ||
+                !consent ||
                 !canSubmit ||
                 (!!turnstileSiteKey && !captchaToken)
               }
@@ -165,7 +191,7 @@ export function SubscribeSection({ birthDate, lifeExpectancy, canSubmit }: Props
             </button>
             <div className="mt-5 flex justify-between font-mono text-[10px] tracking-[0.16em] text-[color:var(--ink-fade)]">
               <span>◦ cancele quando quiser</span>
-              <span>◦ zero spam · zero rastreio</span>
+              <span>◦ zero spam · um email por semana</span>
             </div>
             {status === "error" && message && (
               <p className="mt-4 font-serif text-sm italic text-[color:var(--ink-soft)]">

@@ -21,6 +21,12 @@ export function FooterBar() {
         >
           LinkedIn ↗
         </a>
+        <a
+          href="/privacidade"
+          className="transition-colors hover:text-[color:var(--ink)]"
+        >
+          Privacidade
+        </a>
         <span>© Lucas E. Schuster · MMXXVI</span>
       </div>
     </footer>

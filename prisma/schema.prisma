@@ -15,6 +15,7 @@ model Subscription {
   unsubscribeToken String    @unique
   confirmToken     String?   @unique
   confirmedAt      DateTime?
+  consentAt        DateTime?
   unsubscribedAt   DateTime?
   bouncedAt        DateTime?
   lastSentWeek     Int       @default(0)
