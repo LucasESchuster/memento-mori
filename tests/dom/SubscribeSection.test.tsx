@@ -83,6 +83,7 @@ describe("SubscribeSection — Turnstile (Feature B.7)", () => {
     );
 
     await user.type(screen.getByLabelText(/seu email/i), "me@example.com");
+    await user.click(screen.getByLabelText(/política de privacidade/i));
     await user.click(
       screen.getByRole("button", { name: /receber lembretes/i }),
     );
@@ -94,6 +95,7 @@ describe("SubscribeSection — Turnstile (Feature B.7)", () => {
       birthDate: "1990-05-15",
       lifeExpectancy: 80,
       turnstileToken: "captcha-token",
+      consent: true,
     });
   });
 
@@ -113,6 +115,7 @@ describe("SubscribeSection — Turnstile (Feature B.7)", () => {
       />,
     );
     await user.type(screen.getByLabelText(/seu email/i), "me@example.com");
+    await user.click(screen.getByLabelText(/política de privacidade/i));
     await user.click(
       screen.getByRole("button", { name: /receber lembretes/i }),
     );
@@ -134,6 +137,7 @@ describe("SubscribeSection — Turnstile (Feature B.7)", () => {
       />,
     );
     await user.type(screen.getByLabelText(/seu email/i), "me@example.com");
+    await user.click(screen.getByLabelText(/política de privacidade/i));
     const submit = screen.getByRole("button", {
       name: /receber lembretes/i,
     });
