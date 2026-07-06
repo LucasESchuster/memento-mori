@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import Clarity from "@/components/Clarity";
+import {
+  SITE_AUTHOR,
+  SITE_DESCRIPTION,
+  SITE_LOCALE,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/lib/site";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -23,22 +31,56 @@ const plexSans = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Memento Mori — Lembra-te de que és mortal",
-  description:
-    "Visualize sua vida em semanas. Uma meditação sobre o tempo que resta.",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_AUTHOR }],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: "Memento Mori",
-    description:
-      "Visualize sua vida em semanas. Uma meditação sobre o tempo que resta.",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: "/",
     type: "website",
-    locale: "pt_BR",
-    siteName: "Memento Mori",
+    locale: SITE_LOCALE,
+    siteName: SITE_NAME,
+    // Image is provided by app/opengraph-image.tsx (auto-wired by Next).
   },
   twitter: {
     card: "summary_large_image",
-    title: "Memento Mori",
-    description: "Visualize sua vida em semanas.",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    // Image is provided by app/opengraph-image.tsx (auto-wired by Next).
   },
+  // Cole aqui o token do Google Search Console para verificar o domínio:
+  // verification: { google: "TOKEN_AQUI" },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      inLanguage: "pt-BR",
+      publisher: { "@id": `${SITE_URL}/#person` },
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      name: SITE_AUTHOR,
+      url: SITE_URL,
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -51,8 +93,12 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${cormorant.variable} ${plexMono.variable} ${plexSans.variable} h-full antialiased`}
     >
-      <Clarity />
       <body className="min-h-full bg-[#efe9dd] text-[#1a1613] font-serif">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <Clarity />
         {children}
       </body>
     </html>

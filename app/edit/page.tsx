@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { EditForm } from "@/components/EditForm";
+
+// Per-user, token-gated page reached only via emailed links — keep it out of
+// search indexes.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 type SearchParams = Promise<{ token?: string | string[] }>;
 

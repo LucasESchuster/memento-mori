@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "Política de Privacidade — Memento Mori",
   description:
     "Como o Memento Mori coleta, usa e protege seus dados pessoais, e como exercer seus direitos sob a LGPD.",
+  alternates: {
+    canonical: "/privacidade",
+  },
 };
 
 const CONTACT_EMAIL = "lucasschusterr@gmail.com";
