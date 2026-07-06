@@ -43,6 +43,7 @@ test("subscribe → confirm → send → edit → unsubscribe", async ({
   // Scroll to and fill the subscribe form (chapter V).
   await page.locator("#carta").scrollIntoViewIfNeeded();
   await page.getByPlaceholder("voce@exemplo.com").fill(email);
+  await page.locator("#subscribe-consent").check();
   await page.getByRole("button", { name: /receber lembretes semanais/i }).click();
 
   await expect(
