@@ -61,7 +61,7 @@ function subscribe(
     makeJsonRequest(
       "https://example.test/api/subscribe",
       "POST",
-      { turnstileToken: "test-token", ...body },
+      { turnstileToken: "test-token", consent: true, ...body },
       {
         "x-forwarded-for": "1.2.3.4",
         ...headers,
@@ -243,6 +243,7 @@ describe("POST /api/subscribe — validation (Feature B.7)", () => {
           email: "user@example.com",
           birthDate: "1990-05-15",
           lifeExpectancy: 80,
+          consent: true,
         },
         { "x-forwarded-for": "1.2.3.4" },
       ),
@@ -331,6 +332,7 @@ describe("POST /api/subscribe — IP extraction (Feature B.7)", () => {
             birthDate: "1990-05-15",
             lifeExpectancy: 80,
             turnstileToken: "test-token",
+            consent: true,
           },
           { "x-forwarded-for": "9.9.9.9, 10.0.0.5" },
         ),
@@ -363,6 +365,7 @@ describe("POST /api/subscribe — IP extraction (Feature B.7)", () => {
             birthDate: "1990-05-15",
             lifeExpectancy: 80,
             turnstileToken: "test-token",
+            consent: true,
           },
           { "x-real-ip": "7.7.7.7" },
         ),
@@ -395,6 +398,7 @@ describe("POST /api/subscribe — IP extraction (Feature B.7)", () => {
             birthDate: "1990-05-15",
             lifeExpectancy: 80,
             turnstileToken: "test-token",
+            consent: true,
           }),
         }),
       );
