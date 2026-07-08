@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import Clarity from "@/components/Clarity";
+import { ConsentProvider } from "@/components/ConsentProvider";
+import { CookieConsent } from "@/components/CookieConsent";
 import {
   SITE_AUTHOR,
   SITE_DESCRIPTION,
@@ -98,8 +100,11 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <Clarity />
-        {children}
+        <ConsentProvider>
+          <Clarity />
+          {children}
+          <CookieConsent />
+        </ConsentProvider>
       </body>
     </html>
   );

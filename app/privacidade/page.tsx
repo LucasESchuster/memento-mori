@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FooterBar } from "@/components/FooterBar";
+import { RevokeConsentButton } from "@/components/RevokeConsentButton";
 
 export const metadata: Metadata = {
   title: "Política de Privacidade — Memento Mori",
@@ -125,8 +126,9 @@ export default function PrivacyPage() {
               </li>
               <li>
                 <strong>Melhoria da experiência</strong> (analytics) — com base
-                no legítimo interesse; você pode se opor bloqueando cookies no
-                navegador.
+                no seu <strong>consentimento</strong> (LGPD, art. 7º, I),
+                coletado por um aviso no site. A análise só é ativada se você
+                aceitar, e você pode revogar a qualquer momento (ver seção 05).
               </li>
             </ul>
           </Section>
@@ -157,14 +159,22 @@ export default function PrivacyPage() {
             <p>
               Utilizamos o <strong>Microsoft Clarity</strong>, que emprega
               cookies e pode registrar interações (como cliques e rolagem) para
-              nos ajudar a entender como o site é usado. Também usamos o{" "}
-              <strong>armazenamento local</strong> do navegador para lembrar os
-              valores que você digitou na página inicial — esses dados
-              permanecem apenas no seu dispositivo.
+              nos ajudar a entender como o site é usado. Essa análise{" "}
+              <strong>só é ativada após o seu consentimento</strong>: na sua
+              primeira visita exibimos um aviso e o Clarity só carrega se você
+              aceitar. Se você recusar, nenhum cookie de análise é criado.
             </p>
             <p>
-              Você pode bloquear ou apagar cookies nas configurações do seu
-              navegador a qualquer momento. Isso não impede o uso do serviço.
+              Você pode <strong>rever ou revogar</strong> essa escolha a
+              qualquer momento: <RevokeConsentButton /> Também usamos o{" "}
+              <strong>armazenamento local</strong> do navegador para lembrar os
+              valores que você digitou na página inicial e a sua decisão sobre
+              cookies — esses dados permanecem apenas no seu dispositivo.
+            </p>
+            <p>
+              Além disso, você pode bloquear ou apagar cookies nas configurações
+              do seu navegador a qualquer momento. Isso não impede o uso do
+              serviço.
             </p>
           </Section>
 
