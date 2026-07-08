@@ -36,8 +36,8 @@ export function CookieConsent() {
         className="mb-6 font-serif italic text-[color:var(--ink-soft)]"
         style={{ fontWeight: 300, fontSize: 16, lineHeight: 1.5 }}
       >
-        Usamos o Microsoft Clarity para entender o que funciona e melhorar sua
-        experiência. Nada de anúncios, nada de venda de dados.{" "}
+        Usamos uma ferramenta de análise para entender o que funciona e melhorar
+        sua experiência. Nada de anúncios, nada de venda de dados.{" "}
         <Link
           href="/privacidade"
           className="text-[color:var(--ink-mute)] underline underline-offset-2"
